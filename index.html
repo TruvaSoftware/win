@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        -->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="material/material.min.css">
+        <script type="text/javascript" src="material/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" type="text/css" href="dialog-polyfill-master/dist/dialog-polyfill.css" />
+        <script src="dialog-polyfill-master/dist/dialog-polyfill.js"></script>
+
+        <title>Teknowin Alarm</title>
+    </head>
+    <body class="bg-dark">
+        <div class="ft-main">
+
+            <!-- INTRO PAGE -->
+            <div id="intro" class="bg-dark ft-page ft-page-active">
+                <div class="ft-intro-logo">
+                    <h4><img class="intro-logo" src="img/logo.png"></h4>
+                    <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+                </div>
+            </div>
+
+            <!-- LOGIN PAGE -->            
+            <div id="login" class="ft-page bg-login">
+                    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                        <header class="mdl-layout__header">
+                            <div class="mdl-layout__header-row">
+                                <!-- Title -->
+                                <span class="mdl-layout-title"></span>
+                                <!-- Add spacer, to align navigation to the right -->
+                                <img class="top-logo" src="img/logo.png">
+                                <div class="mdl-layout-spacer"></div>
+                                <div aria-expanded="true" role="button" tabindex="0" class="mdl-layout__drawer-button righted" onclick="Page.route('setWifi')">
+                                    <i class="material-icons">wifi</i>
+                                </div>
+                            </div>
+                        </header>
+                        <main class="mdl-layout__content">
+                            <div class="ft-login-box">
+                                <form id="login-form" method="post">
+                                    <input id="log-cmd" name="log-cmd" value="login" hidden/>
+                                    <input id="log-token" name="log-token" value="" hidden/>
+                                    <input id="log-key" name="log-key" value="" hidden/>
+                                    <input id="log-firm-key" name="log-firm-key" value="" hidden/>
+
+                                    <div class="mdl-card__title mdl-color-text--black relative">
+                                        <h2 class="mdl-card__title-text">Giriş Yap</h2>
+                                    </div>
+                    
+                                    <div class="mdl-card__supporting-text">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input require" id="username" name="username" rel="Kullanıcı adı"/>
+                                            <label class="mdl-textfield__label" for="username">Kullanıcı Adı</label>
+                                        </div>
+                                        <label class="text-error"></label>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input require" type="password" id="password" name="password" onkeypress="if(event.keyCode==13){ user.Login(); }" rel="Şifre"/>
+                                            <label class="mdl-textfield__label" for="password">Şifre</label>
+                                        </div>
+                                        <label class="text-error"></label>
+                                    </div>
+                    
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <div class="mdl-grid">
+                                            <button type="button" onclick="user.Login()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                Giriş Yap
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <div class="title-on-line">Hesabınız yok mu?</div>
+                                    <div class="mdl-grid">
+                                        <button onclick="Page.route('masterUserRegister')" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                            Kayıt Ol
+                                        </button>
+                                    </div>
+                                </div>
+                                <a class="forgot-link" onclick="Page.route('forgotPassword')">Şifrenizi mi unuttunuz?</a>
+
+                            </div>
+                        </main>
+                    </div>
+            </div>
+
+
+            <!-- FORGOT PAGE -->  
+            <div id="forgotPassword" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="forgot-pass-form" method="get">
+                        <div class="mdl-card__title mdl-color-text--black relative">
+                            <h2 id="register-title" class="mdl-card__title-text">Şifremi Unuttum</h2>
+                        </div>
+        
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="forgot-mail" name="forgot-mail" rel="E-Posta veya Kullanıcı Adı"/>
+                                <label class="mdl-textfield__label" for="forgot-mail">E-Posta veya Kullanıcı Adı</label>
+                            </div>
+                            <label id="forgot-mail-error" class="text-error"></label>
+                        </div>
+        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="user.forgotPassword()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Gönder
+                                </button>
+                            </div>
+                        </div>
+                        <p id="forgot-password-success"></p>
+                    </form>
+
+                </div>
+
+            </div>
+            
+
+
+
+            <!-- USER SETTINGS PAGE -->  
+            <div id="userSettings" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                            
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+    
+                <div class="ft-register-box">
+                    <form id="user-settings-form" method="post">
+                        <input id="user-setting-uid" name="uid" value="" hidden/>
+                        <input id="user-setting-usid" name="usid" value="" hidden/>
+                        <input id="user-setting-code" name="code" value="" hidden/>
+                        
+                        <div class="mdl-card__title mdl-color-text--white relative">
+                            <h2 id="user-setting-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">
+                                Bilgilerimi Düzenle
+                            </h2>
+                        </div>
+
+                        <div class="mdl-card__supporting-text">
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="user-setting-email" rel="E-posta" disabled/>
+                                <label class="mdl-textfield__label" for="user-setting-email">E-Posta</label>
+                            </div>
+                            <label class="text-error" id="user-setting-email-err"></label>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="user-setting-username" rel="Kullanıcı adı" disabled/>
+                                <label class="mdl-textfield__label" for="user-setting-username">Kullanıcı Adı</label>
+                            </div>
+                            <label class="text-error" id="user-setting-username-err"></label>
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="user-setting-name" name="user-setting-name" rel="Ad"/>
+                                <label class="mdl-textfield__label" for="user-setting-name">Ad</label>
+                            </div>
+                            <label class="text-error" id="user-setting-name-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="user-setting-lastname" name="user-setting-lastname" rel="Soyad"/>
+                                <label class="mdl-textfield__label" for="user-setting-lastname">Soyad</label>
+                            </div>
+                            <label class="text-error" id="user-setting-lastname-err"></label>
+
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="user-setting-cellp" name="user-setting-cellp" rel="Cep Telefon" placeholder="544#######"/>
+                                <label class="mdl-textfield__label" for="user-setting-cellp">Cep Telefonu</label>
+                            </div>
+                            <label class="text-error" id="user-setting-cellp-err"></label>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" type="password" id="user-setting-password" name="user-setting-password" rel="Şifre"/>
+                                <label class="mdl-textfield__label" for="user-setting-password">Şifre</label>
+                            </div>
+                            <label class="text-error" id="user-setting-password-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input require" type="password" id="user-setting-repassword" name="user-setting-repassword" rel="Şifre (Tekrar)"/>
+                                    <label class="mdl-textfield__label" for="user-setting-repassword">Şifre (Tekrar)</label>
+                            </div>
+                            <label class="text-error" id="user-setting-repassword-err"></label>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="user.settingsSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <!-- HOME PAGE -->  
+            <div id="home" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="true" role="button" tabindex="0" class="mdl-layout__drawer-button">
+                            <i class="material-icons">menu</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+
+                        <button id="home-settings-btn" class="mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">more_vert</i>
+                        </button>
+                        <ul id="home-settings-menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="home-settings-btn">
+
+                        </ul>
+                      </div>
+                    </header>
+                    <div class="mdl-layout__drawer">
+                        <span class="mdl-layout-title">Menü</span>
+                        <span id="uname-chip" class="mdl-chip">
+                            <span id="menu-uname" class="mdl-chip__text"></span>
+                            <b type="button" class="mdl-chip__action"><i class="material-icons">person</i></b>
+                        </span>
+                        <!-- MENU -->
+                        <nav id="menu" class="mdl-navigation"></nav>
+                    </div>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="place-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Yerlerim</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+
+                                        <div id="place-room-list" class="demo-list-action mdl-list">
+  
+
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="place.sendAdd()">
+                                          Yer Ekle
+                                        </a>
+                                      </div>-->
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- EDIT PLACE ROOM PAGE -->  
+            <div id="editPlaceRoom" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('settings')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+                      </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="edit-place-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Yer & Oda & Cihaz Düzenle</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <div id="edit-place-room-list">
+
+                                            <div class="acc">
+                                                <div id="place-item-0" class="acc_item sub1">
+                                                    <div class="acc_item_arr" onclick="place.toggleSub1(0)"><i class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                    <div class="acc_item_text">
+                                                        <div class="edit-pla-labels">
+                                                            <div id="edit-pla-label-0" class="edit-pla-label text-label-visible" onclick="place.toggleSub1(0)">
+                                                                <img src="img/home.png">
+                                                                <span>Ev</span>
+                                                            </div>
+                                                            <div id="edit-pla-text-0" class="edit-pla-text">
+                                                                <input type="text" id="edit-pla-input-0">
+                                                            </div>
+                                                        </div>
+                                                        <div class="edit-pla-btns">
+                                                            <div id="edit-pla-cmd-btns-0" class="edit-pla-cmd-btns btns-visible">
+                                                                <div class="edit-pla-edit-btn" onclick="place.edit(0)"><i class="material-icons">edit</i></div>
+                                                                <div class="edit-pla-del-btn"><i class="material-icons">delete_outline</i></div>
+                                                            </div>
+                                                            
+                                                            <div id="edit-pla-ok-btns-0" class="edit-pla-ok-btns">
+                                                                <div class="edit-pla-edit-btn" onclick="place.editOK(0)"><i class="material-icons">done</i></div>
+                                                                <div class="edit-pla-del-btn" onclick="place.editNO(0)"><i class="material-icons">close</i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="place-cont-0" class="acc_content con1">
+                                                    <div class="acc">
+                                                        <div id="room-item-0-0" class="acc_item sub2">
+                                                            <div class="acc_item_arr" onclick="place.toggleSub2(0,0)"><i class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                            <div class="acc_item_text">
+                                                                <div class="edit-pla-labels">
+                                                                    <div id="edit-pla-label-0-0" class="edit-pla-label text-label-visible" onclick="place.toggleSub2(0,0)">
+                                                                        <img src="img/room.png">
+                                                                        <span>Oturma Odası</span>
+                                                                    </div>
+                                                                    <div id="edit-pla-text-0-0" class="edit-pla-text">
+                                                                        <input type="text" id="edit-pla-input-0-0">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="edit-pla-btns">
+                                                                    <div id="edit-pla-cmd-btns-0-0" class="edit-pla-cmd-btns btns-visible">
+                                                                        <div class="edit-pla-edit-btn" onclick="place.edit2(0,0)"><i class="material-icons">edit</i></div>
+                                                                        <div class="edit-pla-del-btn"><i class="material-icons">delete_outline</i></div>
+                                                                    </div>
+                                                                    
+                                                                    <div id="edit-pla-ok-btns-0-0" class="edit-pla-ok-btns">
+                                                                        <div class="edit-pla-edit-btn" onclick="place.editOK2(0,0)"><i class="material-icons">done</i></div>
+                                                                        <div class="edit-pla-del-btn" onclick="place.editNO2(0,0)"><i class="material-icons">close</i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="room-cont-0-0" class="acc_content con2">
+                                                            <div class="acc no-arr">
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">
+                                                                        <div class="edit-pla-labels">
+                                                                            <div id="edit-pla-label-0-0-0" class="edit-pla-label text-label-visible">
+                                                                                <img src="img/sensors/master.png">
+                                                                                <span>Alarm 1</span>
+                                                                            </div>
+                                                                            <div id="edit-pla-text-0-0-0" class="edit-pla-text">
+                                                                                <input type="text" id="edit-pla-input-0-0-0">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="edit-pla-btns">
+                                                                            <div id="edit-pla-cmd-btns-0-0-0" class="edit-pla-cmd-btns btns-visible">
+                                                                                <div class="edit-pla-edit-btn" onclick="place.edit3(0,0,0)"><i class="material-icons">edit</i></div>
+                                                                                <div class="edit-pla-del-btn"><i class="material-icons">delete_outline</i></div>
+                                                                            </div>
+                                                                            
+                                                                            <div id="edit-pla-ok-btns-0-0-0" class="edit-pla-ok-btns">
+                                                                                <div class="edit-pla-edit-btn" onclick="place.editOK3(0,0,0)"><i class="material-icons">done</i></div>
+                                                                                <div class="edit-pla-del-btn" onclick="place.editNO3(0,0,0)"><i class="material-icons">close</i></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 2</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Hareket 1</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="room-item-0-1" class="acc_item sub2" onclick="place.toggleSub2(0,1)">
+                                                            <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                            <div class="acc_item_text">Accordion 2</div>
+                                                        </div>
+                                                        <div id="room-cont-0-1" class="acc_content con2">
+                                                            <div class="acc no-arr">
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 1</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 2</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Hareket 1</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="place-item-1" class="acc_item sub1" onclick="place.toggleSub1(1)">
+                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                    <div class="acc_item_text">İşyerim</div>
+                                                </div>
+                                                <div id="place-cont-1" class="acc_content con1">
+                                                    <div class="acc">
+                                                        <div id="room-item-1-0" class="acc_item sub2" onclick="place.toggleSub2(1,0)">
+                                                            <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                            <div class="acc_item_text">Oturma Odası</div>
+                                                        </div>
+                                                        <div id="room-cont-1-0" class="acc_content con2">
+                                                            <div class="acc no-arr">
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 1</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 2</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Hareket 1</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="room-item-1-1" class="acc_item sub2" onclick="place.toggleSub2(1,1)">
+                                                            <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                            <div class="acc_item_text">Accordion 2</div>
+                                                        </div>
+                                                        <div id="room-cont-1-1" class="acc_content con2">
+                                                            <div class="acc no-arr">
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 1</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Alarm 2</div>
+                                                                </div>
+                                                                <div class="acc_item sub3">
+                                                                    <div class="acc_item_arr"><i id="edit-place-arrow-1" class="material-icons edit-place-arrow">keyboard_arrow_right</i></div>
+                                                                    <div class="acc_item_text">Hareket 1</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!--ALARM ROOM PAGE -->  
+            <div id="alarmRoom" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                            <button id="room-settings-btn" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul id="room-settings-menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="room-settings-btn">
+
+                            </ul>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="device-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 id="device-list-path" class="mdl-card__title-text">Cihazlarım</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+
+                                        <div id="device-sensor-list" class="demo-list-action mdl-list">
+  
+                                            
+                                        </div>
+                                    </div>
+                                    <div id="stop-edit-btn" class="mdl-card__actions mdl-card--border" style="display:none;">
+                                      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="dev.hideEditDeviceBtns()">
+                                        Düzenlemeyi Bitir
+                                      </a>
+                                    </div>
+                                    
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- ALARM DEVICE PAGE -->  
+            <div id="alarmDevice" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button back-btn" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                            <button id="device-settings-btn" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul id="device-settings-menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="device-settings-btn">
+                                <li class="mdl-menu__item">Some Action</li>
+                                <li class="mdl-menu__item">Another Action</li>
+                                <li disabled class="mdl-menu__item">Disabled Action</li>
+                                <li class="mdl-menu__item">Yet Another Action</li>
+                            </ul>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div class="alarm-status-bar">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                        <h4 id="device-path" class="status-title">Alarm Durumu</h4>
+                                    </div>
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <h6 id="alarm-status" class="status-title">-</h6>
+                                    </div>
+                                    <div class="mdl-ft-btn">
+                                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button history-btn" onclick="">
+                                            <i class="material-icons">history</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="master_cmd_panel" class="command-panel">
+                                <button id="home-in-btn" cmd="setMode" mod="3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent first-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-lt" src="img/event_seat.png">
+                                    <span class="material-btn-title">EVE GİRİŞ</span>
+                                </button>
+                                <button id="home-out-btn" cmd="setMode" mod="1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent second-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-rt" src="img/directions_run.png">
+                                    <span class="material-btn-title">EVDEN ÇIKIŞ</span>
+                                </button>
+                                <button id="close-btn" cmd="stopAllAlarms" mod="null" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent third-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-lb" src="img/close.png">
+                                    <span class="material-btn-title2">KAPALI</span>
+                                </button>
+                                <button cmd="muteMaster" mod="null"  class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent fourth-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-rb" src="img/volume_off.png">
+                                    <span class="material-btn-title2">SESSİZ'E AL</span>
+                                </button>
+                                <button id="night-btn" cmd="setMode" mod="2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent fifth-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-center" src="img/night.png">
+                                    <span class="material-btn-title">GECE MODU</span>
+                                </button>
+                            </div>
+                        
+                            <div id="motion_cmd_panel" class="command-panel" style="display:none;">
+                                <button id="m-set-active-btn" cmd="setActive" mod="null" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent first-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-lt" src="img/event_seat.png">
+                                    <span class="material-btn-title">AKTİF</span>
+                                </button>
+                                <button id="m-set-passive-btn" cmd="setPassive" mod="null" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent second-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-rt" src="img/directions_run.png">
+                                    <span class="material-btn-title">PASİF</span>
+                                </button>
+                                <button id="m-stop-alarm-btn" cmd="stopAlarm" mod="null" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent third-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-lb" src="img/close.png">
+                                    <span class="material-btn-title2">KAPALI</span>
+                                </button>
+                                <button cmd="setMute" mod="null" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent fourth-btn mod-btn-active cmd-btn">
+                                    <img class="mode-btn-icon-rb" src="img/volume_off.png">
+                                    <span class="material-btn-title2">SESSİZ'E AL</span>
+                                </button>
+                                <button id="center-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent fifth-btn center-btn-bg-passive" disabled>
+                                    <div class="circle-container">
+                                        <img src="img/sensors/motion_sensor_icon_white.png">
+                                        <div class="center-circle">
+                                            <div class="center-circle">
+                                                <div class="center-circle">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            <button id="sensor-pages-btn" type="button" onclick="Page.showBottomPage()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white sensors-btn" data-upgraded=",MaterialButton,MaterialRipple">
+                                SENSÖRLER
+                                <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span>
+                            </button>
+                            <div id="sensors" class="ft-bottom-page">
+                                <div class="ft-bottom-page-header">
+                                    <h6>Sensörler</h6>
+                                    <button onclick="Page.hideBottomPage()" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored bottom-page-close-btn">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                </div>
+                                <!-- SENSOR LIST -->
+                                <div id="sensor-list" class="ft-bottom-page-content">
+
+                                </div>
+                                <div id="stop-alarm-btn-box">
+                                            <div class="mdl-grid">
+                                                <button id="stop-all-alarm-btn"  type="button" onclick="dev.stopAllAlarms()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                    Alarmı Kapat
+                                                </button id="sensor-add-btn">
+                                            </div>
+
+                                    </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- USERS PAGE -->  
+            <div id="users" class="ft-page bg-light ">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                            <div aria-expanded="true" role="button" tabindex="0" class="mdl-layout__drawer-button righted" onclick="Page.route('addUser')">
+                                <i class="material-icons">person_add</i>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="users-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Kullanıcılar</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <!-- USER LIST -->
+                                        <div id="user-list" class="demo-list-two mdl-list"></div>
+                                    </div>
+                                    <!--
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="place.sendAdd()">
+                                          Yer Ekle
+                                        </a>
+                                      </div>-->
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+
+            <!-- EDIT AUTHORITY PAGE -->            
+            <div id="editAuthority" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('users')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="ft-login-box">
+                            <form id="edit-authority-form">
+                                    <input id="u-eauth-user-id" name="user-id" value="" hidden/>
+                                    <input id="u-eauth-usid" name="usid" value="" hidden/>
+                                    <input id="u-eauth-code" name="code" value="" hidden/>
+                                    <input id="u-eauth-switchs" name="authority-switch" value="" hidden/>
+                                    <div class="mdl-card__title mdl-color-text--black relative">
+                                        <h2 id="edit-auth-title-text" class="mdl-card__title-text"></h2>
+                                    </div>
+                    
+                                    <div class="mdl-card__supporting-text">
+                                        <ul id="authority-places-list" class="demo-list-control mdl-list">
+
+                                        </ul>
+                                        <label class="text-error"></label>
+                                    </div>
+                    
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <div class="mdl-grid">
+                                            <button type="button" onclick="user.authoritySave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                Kaydet
+                                            </button>
+                                        </div>
+                                    </div>
+                            </form>
+
+                        </div>
+                    </main>
+                </div>
+            </div>
+        
+            <!-- ADD USER PAGE -->  
+            <div id="addUser" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('users')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+                <div class="ft-register-box">
+                    <form id="user-register-form" method="post">
+                        <input id="user-sub" name="user-sub" value="" hidden/>
+                        <input id="reg-firm-key" name="reg-firm-key" value="" hidden/>
+                        <input id="u-reg-usid" name="usid" value="" hidden/>
+                        <input id="u-reg-code" name="code" value="" hidden/>
+
+
+                        <div class="mdl-card__title mdl-color-text--white relative">
+                            <h2 id="register-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">Kullanıcı Ekle</h2>
+                        </div>
+        
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-name" name="reg-name" rel="Ad"/>
+                                <label class="mdl-textfield__label" for="name">Ad</label>
+                            </div>
+                            <label class="text-error" id="reg-name-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-lastname" name="reg-lastname" rel="Soyad"/>
+                                <label class="mdl-textfield__label" for="lastname">Soyad</label>
+                            </div>
+                            <label class="text-error" id="reg-lastname-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-email" name="reg-email" rel="E-posta"/>
+                                <label class="mdl-textfield__label" for="email">E-Posta</label>
+                            </div>
+                            <label class="text-error" id="reg-email-err"></label>
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-cellp" name="reg-cellp" rel="Cep Telefon" placeholder="544#######"/>
+                                <label class="mdl-textfield__label" for="cellp">Cep Telefonu</label>
+                            </div>
+                            <label class="text-error" id="reg-cellp-err"></label>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-username" name="reg-username" rel="Kullanıcı adı"/>
+                                <label class="mdl-textfield__label" for="username">Kullanıcı Adı</label>
+                            </div>
+                            <label class="text-error" id="reg-username-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" type="password" id="reg-password" name="reg-password" rel="Şifre"/>
+                                <label class="mdl-textfield__label" for="password">Şifre</label>
+                            </div>
+                            <label class="text-error" id="reg-password-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" type="password" id="reg-repassword" name="reg-repassword" rel="Şifre (Tekrar)"/>
+                                <label class="mdl-textfield__label" for="repassword">Şifre (Tekrar)</label>
+                            </div>
+                            <label class="text-error" id="reg-repassword-err"></label>
+                        </div>
+                        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="user.register()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT USER PAGE -->  
+            <div id="editUser" class="ft-page bg-white">
+                    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                        <header class="mdl-layout__header">
+                            <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('users')">
+                                <i class="material-icons">arrow_back_ios</i>
+                            </div>
+                            <div class="mdl-layout__header-row">
+                                <!-- Title -->
+                                <span class="mdl-layout-title"></span>
+                                <!-- Add spacer, to align navigation to the right -->
+                                <img class="top-logo" src="img/logo.png">
+                                <div class="mdl-layout-spacer"></div>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="ft-register-box">
+                        <form id="user-edit-form" method="post">
+                            <input id="log-cmd" name="log-cmd" value="user-edit" hidden/>
+                            <input id="user-id" name="user-id" value="" hidden/>
+                            <input id="ue-reg-usid" name="usid" value="" hidden/>
+                            <input id="ue-reg-code" name="code" value="" hidden/>
+                            <div class="mdl-card__title mdl-color-text--white relative">
+                                <h2 id="register-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">Kullanıcı Düzenle</h2>
+                            </div>
+            
+                            <div class="mdl-card__supporting-text">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input require" type="text" id="u-edit-name" name="u-edit-name" rel="Ad"/>
+                                    <label class="mdl-textfield__label" for="u-edit-name">Ad</label>
+                                </div>
+                                <label class="text-error" id="u-edit-name-err"></label>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input require" type="text" id="u-edit-lastname" name="u-edit-lastname" rel="Soyad"/>
+                                    <label class="mdl-textfield__label" for="u-edit-lastname">Soyad</label>
+                                </div>
+                                <label class="text-error" id="u-edit-lastname-err"></label>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="email" id="u-edit-email" name="u-edit-email" rel="E-posta" disabled/>
+                                    <label class="mdl-textfield__label" for="u-edit-email">E-Posta</label>
+                                </div>
+                                <label class="text-error" id="u-edit-email-err"></label>
+                                
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input require" type="text" id="u-edit-cellp" name="u-edit-cellp" rel="Cep Telefon" placeholder="544#######"/>
+                                    <label class="mdl-textfield__label" for="u-edit-cellp">Cep Telefonu</label>
+                                </div>
+                                <label class="text-error" id="u-edit-cellp-err"></label>
+    
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" id="u-edit-username" name="u-edit-username" rel="Kullanıcı adı" disabled/>
+                                    <label class="mdl-textfield__label" for="u-edit-username">Kullanıcı Adı</label>
+                                </div>
+                                <label class="text-error" id="u-edit-username-err"></label>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="password" id="u-edit-password" name="u-edit-password" rel="Şifre"/>
+                                    <label class="mdl-textfield__label" for="u-edit-password">Şifre</label>
+                                </div>
+                                <label id="u-edit-password-err" class="text-error" id="u-edit-password-err"></label>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="password" id="u-edit-repassword" name="u-edit-repassword" rel="Şifre (Tekrar)"/>
+                                    <label class="mdl-textfield__label" for="u-edit-repassword">Şifre (Tekrar)</label>
+                                </div>
+                                <label id="u-edit-repassword-err" class="text-error" id="u-edit-repassword-err"></label>
+                            </div>
+                            
+                            <div class="mdl-card__actions mdl-card--border">
+                                <div class="mdl-grid">
+                                    <button type="button" onclick="user.editSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                        Kaydet
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            </div>
+
+            <!-- ADD PLACE PAGE -->  
+            <div id="addPlace" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="place-add-form" method="get">
+                        <div class="mdl-card__title mdl-color-text--black relative">
+                            <h2 id="register-title" class="mdl-card__title-text">Yer Ekle</h2>
+                        </div>
+                        <input id="place-uid" name="place-uid" hidden/>
+                        <input id="place-add-usid" name="usid" hidden/>
+                        <input id="place-add-code" name="code" hidden/>
+
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="place-name" name="place-name" rel="Yer Adı"/>
+                                <label class="mdl-textfield__label" for="place-name">Yer Adı</label>
+                            </div>
+                            <label id="place-name-err" class="text-error"></label>
+                        </div>
+        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="place.save()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- ADD ROOM PAGE -->  
+            <div id="addRoom" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="room-add-form" method="get">
+                        <div class="mdl-card__title mdl-color-text--black relative">
+                            <h2 id="register-title" class="mdl-card__title-text">Oda Ekle</h2>
+                        </div>
+                        <input id="room-uid" name="room-uid" hidden/>
+                        <input id="room-sub" name="room-sub" hidden/>
+                        <input id="room-add-usid" name="usid" hidden/>
+                        <input id="room-add-code" name="code" hidden/>
+
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="room-name" name="room-name" rel="Oda Adı"/>
+                                <label class="mdl-textfield__label" for="room-name">Oda Adı</label>
+                            </div>
+                            <label id="room-name-err" class="text-error"></label>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="place.roomSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!-- SET WIFI PAGE -->  
+            <div id="setWifi" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="set-wifi-form" method="get">
+                        <div class="mdl-card__title mdl-color-text--black relative">
+                            <h2 id="register-title" class="mdl-card__title-text">Ana Cihaz Wifi Ayarları</h2>
+                        </div>
+        
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="wifi-ssid" name="wifi-ssid" rel="Wifi Adı"/>
+                                <label class="mdl-textfield__label" for="wifi-ssid">Wifi Adı</label>
+                            </div>
+                            <label class="text-error"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="wifi-pass" name="wifi-pass" rel="Wifi Şifresi"/>
+                                <label class="mdl-textfield__label" for="wifi-pass">Wifi Şifresi</label>
+                            </div>
+                            <label class="text-error"></label>
+                        </div>
+        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="dev.setWifi()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <h6>Kayıtlı Modemler</h6>
+                    <div class="wifi-list-history">
+
+                        <ul id="wifi-history-list" class="demo-list-icon mdl-list">
+                            
+                        </ul>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SETTINGS PAGE -->  
+            <div id="settings" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+                      </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="settings-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Ayarlar</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        
+                                        <div class="ft-setting-box">
+                                            <ul class="demo-list-three mdl-list settings-list">
+                                                <li class="mdl-list__item mdl-list__item--three-line" onclick="Page.route('userSettings')">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons mdl-list__item-avatar">person</i>
+                                                    <span>Bilgilerimi Düzenle</span>
+                                                    <span class="mdl-list__item-text-body">
+                                                        Teknowin Alarm hesabınızın bilgilerini düzenleyebilir, şifrenizi değiştirebilirsiniz.
+                                                    </span>
+                                                </span>
+                                                </li>
+                                                <li class="mdl-list__item mdl-list__item--three-line" onclick="Page.route('syncSmartHome')">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons mdl-list__item-avatar">home</i>
+                                                    <span>Akıllı Ev Senkronizasyonu</span>
+                                                    <span class="mdl-list__item-text-body">
+                                                        Teknowin Smart Home üyeliğinizle bağlantı kurabilirsiniz.
+                                                    </span>
+                                                </span>
+                                                </li>
+                                                <li class="mdl-list__item mdl-list__item--three-line" onclick="Page.route('setWifi')">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons mdl-list__item-avatar">wifi</i>
+                                                    <span>Alarm Ana Cihaz Wifi Ayarları</span>
+                                                    <span class="mdl-list__item-text-body">
+                                                        Alarm ana cihaz veya Smart Motion cihazına modem bilgilerini gönderebilirsiniz.
+                                                    </span>
+                                                </span>
+                                                </li>
+                                                <li class="mdl-list__item mdl-list__item--three-line" onclick="Page.route('editPlaceRoom')">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons mdl-list__item-avatar">location_city</i>
+                                                    <span>Yer & Oda & Cihaz Düzenle</span>
+                                                    <span class="mdl-list__item-text-body">
+                                                        Yerlerinizin, Odalarınızın ve Cihazlarınızın isimlerini düzenleyebilir, silebilirsiniz. 
+                                                    </span>
+                                                </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- SMART HOME LOGIN PAGE -->  
+            <div id="smartLogin" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('syncSmartHome')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="smart-login-box">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Akıllı Ev Uygulaması Bilgileriyle Giriş Yapın</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <div class="ft-login-box">
+                                            <form id="smart-login-form" method="post">
+                                                <input id="s-cmd" name="s-cmd" value="login" hidden/>
+                                                <input id="s-log-usid" name="usid" value="" hidden/>
+                                                <input id="s-log-code" name="code" value="" hidden/>
+                                                <input id="s-log-event-id" value="" hidden/>
+
+                            
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <input class="mdl-textfield__input require" id="s-username" name="s-username" rel="Kullanıcı adı"/>
+                                                    <label class="mdl-textfield__label" for="username">Kullanıcı Adı</label>
+                                                </div>
+                                                <label class="text-error"></label>
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <input class="mdl-textfield__input require" type="password" id="s-password" name="s-password" rel="Şifre"/>
+                                                    <label class="mdl-textfield__label" for="password">Şifre</label>
+                                                </div>
+                                                <label class="text-error"></label>
+                                                <div id="smart-login-status"></div>
+                                                <button type="button" onclick="smart.login()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                    Giriş Yap
+                                                </button>
+
+                                            </form>
+                
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="place.sendAdd()">
+                                          Yer Ekle
+                                        </a>
+                                      </div>-->
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+
+            <!-- ADD EVENT PAGE -->  
+            <div id="addEvent" class="ft-page bg-light ">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('syncSmartHome')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="event-add-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Olay Ekle</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <div class="ft-register-box">
+                                            <form id="event-add-form" method="get">
+
+                                                <input id="e-add-usid" name="usid" value="" hidden/>
+                                                <input id="e-add-code" name="code" value="" hidden/>
+                                                <input id="smart-switchs" name="s-switchs" value="" hidden>
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <input class="mdl-textfield__input require" type="text" id="event-name" name="event-name" rel="Olay Adı"/>
+                                                    <label class="mdl-textfield__label" for="event-name">Olay Adı Belirleyiniz</label>
+                                                </div>
+                                                <label id="event-name-err" class="text-error"></label>
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <select class="mdl-textfield__input require" id="dev-slct" name="dev-slct" rel="Cihaz" onchange="smart.getSensorOptions()">
+                                                        <option>Demo Alarm</option>
+                                                        <option>Alarm Hareket</option>
+                                                    </select>
+                                                    <label class="mdl-textfield__label" for="dev-slct">Cihaz Seçiniz</label>
+                                                </div>
+                                                <label id="dev-slct-err" class="text-error"></label>
+                        
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <select class="mdl-textfield__input require" id="sen-slct" name="sen-slct" rel="Sensör">
+                                                    </select>
+                                                    <label class="mdl-textfield__label" for="sen-slct">Sensör Seçiniz</label>
+                                                </div>
+                                                <label id="sen-slct-err" class="text-error"></label>
+                                
+                                                <p class="comment-box">Seçtiğiniz cihazlar tetiklendiğinde, faaliyete geçmesini istediğiniz "Akıllı Ev" cihazlarını seçip ve durumlarını seçiniz.</p>
+                                                <label id="smart-switchs-err" class="text-error"></label>
+                                                <div class = "mdl-tabs mdl-js-tabs">
+                                                    <div class = "mdl-tabs__tab-bar">
+                                                       <a href = "#lamps-panel" class = "mdl-tabs__tab is-active">Lambalar</a>
+                                                       <a href = "#switchs-panel" class = "mdl-tabs__tab">Prizler</a>
+                                                       <a href = "#valves-panel" class = "mdl-tabs__tab">Vanalar</a>
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel is-active" id = "lamps-panel">
+                                                        <ul id="event-add-lm-list" class="demo-list-control mdl-list"></ul>
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel" id = "switchs-panel">
+
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel" id = "valves-panel">
+
+                                                    </div>
+                                                 </div>
+
+
+
+
+
+
+                                                <button type="button" onclick="smart.eventSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                    Kaydet
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="place.sendAdd()">
+                                          Yer Ekle
+                                        </a>
+                                      </div>-->
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+
+            <!-- EDIT EVENT PAGE -->  
+            <div id="editEvent" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('syncSmartHome')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="event-edit-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Olay Düzenle</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <div class="ft-register-box">
+                                            <form id="event-edit-form" method="get">
+
+                                                <input id="e-edit-usid" name="usid" value="" hidden/>
+                                                <input id="e-edit-code" name="code" value="" hidden/>
+                                                <input id="e-edit-id" name="eid" value="" hidden/>
+
+                                                <input id="smart-edit-switchs" name="s-switchs" value="" hidden>
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <input class="mdl-textfield__input require" type="text" id="event-edit-name" name="event-name" rel="Olay Adı"/>
+                                                    <label class="mdl-textfield__label" for="event-edit-name">Olay Adı Belirleyiniz</label>
+                                                </div>
+                                                <label id="event-edit-name-err" class="text-error"></label>
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <select class="mdl-textfield__input require" id="dev-edit-slct" name="dev-slct" rel="Cihaz" onchange="smart.getSensorOptionsForEdit()">
+                                                        <option>Demo Alarm</option>
+                                                        <option>Alarm Hareket</option>
+                                                    </select>
+                                                    <label class="mdl-textfield__label" for="dev-edit-slct">Cihaz Seçiniz</label>
+                                                </div>
+                                                <label id="dev-edit-slct-err" class="text-error"></label>
+                        
+                                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                    <select class="mdl-textfield__input require" id="sen-edit-slct" name="sen-slct" rel="Sensör">
+                                                        <option>Hepsi</option>
+                                                        <option>Hareket Sensörü</option>
+                                                        <option>Gaz Sensörü Sensörü</option>
+                                                    </select>
+                                                    <label class="mdl-textfield__label" for="sen-edit-slct">Sensör Seçiniz</label>
+                                                </div>
+                                                <label id="sen-edit-slct-err" class="text-error"></label>
+                                
+                                                <p class="comment-box">Seçtiğiniz cihazlar tetiklendiğinde, faaliyete geçmesini istediğiniz "Akıllı Ev" cihazlarını seçip ve durumlarını seçiniz.</p>
+                                                <label id="smart-edit-switchs-err" class="text-error"></label>
+                                                <div class = "mdl-tabs mdl-js-tabs">
+                                                    <div class = "mdl-tabs__tab-bar">
+                                                       <a href = "#lamps-edit-panel" class = "mdl-tabs__tab is-active">Lambalar</a>
+                                                       <a href = "#switchs-edit-panel" class = "mdl-tabs__tab">Prizler</a>
+                                                       <a href = "#valves-edit-panel" class = "mdl-tabs__tab">Vanalar</a>
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel is-active" id = "lamps-edit-panel">
+
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel" id = "switchs-edit-panel">
+
+                                                    </div>
+                                                 
+                                                    <div class = "mdl-tabs__panel" id = "valves-edit-panel">
+
+                                                    </div>
+                                                 </div>
+
+
+
+
+
+
+                                                <button type="button" onclick="smart.eventEditSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                    Kaydet
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect bottom-add-btn" onclick="place.sendAdd()">
+                                          Yer Ekle
+                                        </a>
+                                      </div>-->
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+
+
+            <!-- SMART HOME SYNC PAGE -->            
+            <div id="syncSmartHome" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('settings')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                            <button id="sync-settings-btn" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul id="sync-settings-menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="sync-settings-btn">
+                                <li class="mdl-menu__item" onclick="smart.checkLoginForAddEvent()">Olay Ekle</li>
+                            </ul>
+                        </div>
+
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="sync-list">
+                                <div class="mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Akıllı Ev Senkronizasyonu</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+                                        <div id="syncronization-list">
+
+
+                                        </div>
+                                    </div>
+
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                    <!--
+                    <main class="mdl-layout__content">
+                        <div class="ft-login-box">
+                            <form id="smart-login-form" method="post" style="display: none;">
+                                <input id="s-cmd" name="s-cmd" value="login" hidden/>
+                                <input id="s-log-usid" name="usid" value="" hidden/>
+                                <input id="s-log-code" name="code" value="" hidden/>
+
+                                <div class="mdl-card__title mdl-color-text--black relative">
+                                    <h2 class="mdl-card__title-text">Akıllı Ev Uygulaması Bilgileriyle Giriş Yapın</h2>
+                                </div>
+                
+                                <div class="mdl-card__supporting-text">
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input require" id="s-username" name="s-username" rel="Kullanıcı adı"/>
+                                        <label class="mdl-textfield__label" for="username">Kullanıcı Adı</label>
+                                    </div>
+                                    <label class="text-error"></label>
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input require" type="password" id="s-password" name="s-password" rel="Şifre"/>
+                                        <label class="mdl-textfield__label" for="password">Şifre</label>
+                                    </div>
+                                    <label class="text-error"></label>
+                                </div>
+                
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-grid">
+                                        <button type="button" onclick="smart.login()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                            Giriş Yap
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <form id="smart-lamp-form" style="display:none">
+                                    <input id="s-cmd" name="s-cmd" value="save" hidden/>
+                                    <input id="s-mid" name="s-mid" value="" hidden/>
+                                    <input id="s-switchs" name="s-switchs" value="" hidden>
+                                    <div class="mdl-card__title mdl-color-text--black relative">
+                                            <h2 class="mdl-card__title-text">Alarm Tetiklendiğinde yanmasını istediğiniz lambaları seçin</h2>
+                                        </div>
+                        
+                                        <div class="mdl-card__supporting-text">
+                                            <ul id="smartLampsList" class="demo-list-control mdl-list">
+ 
+                                            </ul>
+                                            <label class="text-error"></label>
+                                        </div>
+                        
+                                        <div class="mdl-card__actions mdl-card--border">
+                                            <div class="mdl-grid">
+                                                <button type="button" onclick="smart.save()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                    Kaydet
+                                                </button>
+                                            </div>
+                                        </div>
+
+                            </form>
+
+                        </div>
+                    </main>
+                    -->
+                </div>
+            </div>
+        
+            <!-- SET PRECISION -->  
+            <div id="setPrecision" class="ft-page bg-white">
+
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                                <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="page-content">
+                                <div class="precision-list-box">
+                                        <input id="precision-set-dev-id" name="precision-set-dev-id" value="" hidden/>
+                                        <ul class="demo-list-control mdl-list">
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Çok Düşük
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-precision-4">
+                                                    <input type="radio" id="set-precision-4" class="mdl-radio__button" name="set-precision" value="4"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Düşük
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-precision-3">
+                                                    <input type="radio" id="set-precision-3" class="mdl-radio__button" name="set-precision" value="3"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Orta
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-precision-2">
+                                                    <input type="radio" id="set-precision-2" class="mdl-radio__button" name="set-precision" value="2"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Yüksek
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-precision-1">
+                                                    <input type="radio" id="set-precision-1" class="mdl-radio__button" name="set-precision" value="1"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Çok Yüksek
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-precision-0">
+                                                    <input type="radio" id="set-precision-0" class="mdl-radio__button" name="set-precision" value="0"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <div class="mdl-grid">
+                                            <button type="button" onclick="dev.savePrecision()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                Kaydet
+                                            </button>
+                                        </div>
+                                    </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+            
+            <!-- SET MOTION PRECISION -->  
+            <div id="setMotionPrecision" class="ft-page bg-white">
+
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div  id="setMotionPrecision-back-btn" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                                <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="page-content">
+                                <div class="motion-precision-list-box">
+                                    <form id="motion-precision-form">
+                                        <input id="motion-precision-did" name="did" value="" hidden/>
+                                        <input id="motion-precision-usid" name="usid" value="" hidden/>
+                                        <input id="motion-precision-code" name="code" value="" hidden/>
+
+                                        <ul class="demo-list-control mdl-list">
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Çok Düşük
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="motion-prec-1">
+                                                    <input type="radio" id="motion-prec-1" class="mdl-radio__button" name="motion-prec" value="1"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Düşük
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="motion-prec-2">
+                                                    <input type="radio" id="motion-prec-2" class="mdl-radio__button" name="motion-prec" value="2"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Orta
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="motion-prec-3">
+                                                    <input type="radio" id="motion-prec-3" class="mdl-radio__button" name="motion-prec" value="3"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Yüksek
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="motion-prec-4">
+                                                    <input type="radio" id="motion-prec-4" class="mdl-radio__button" name="motion-prec" value="4"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    Çok Yüksek
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="motion-prec-5">
+                                                    <input type="radio" id="motion-prec-5" class="mdl-radio__button" name="motion-prec" value="5"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </form>
+                                    </div>
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <div class="mdl-grid">
+                                            <button   id="setMotionPrecision-save-btn" type="button" onclick="dev.saveMotionPrecision()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                Kaydet
+                                            </button>
+                                        </div>
+                                    </div>
+                        </div>
+                    </main>
+                </div>
+                
+            </div>
+
+            <!-- ADD DEVICE PAGE -->  
+            <div id="addDevice" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div id="add-device-back-btn" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="device-add-form" method="post">
+                        <input id="dev-add-did" name="did" value="" hidden/>
+                        <input id="dev-add-type" name="typ" value="" hidden/>
+                        <input id="dev-add-dcode" name="cod" value="" hidden/>
+                        <input id="dev-add-pid" name="pid" value="" hidden/>
+                        <input id="dev-add-rid" name="rid" value="" hidden/>
+                        <input id="dev-add-mid" name="mid" value="" hidden/>
+
+                        <input id="dev-add-usid" name="usid" value="" hidden/>
+                        <input id="dev-add-code" name="code" value="" hidden/>
+                        <div class="mdl-card__title mdl-color-text--white relative">
+                            <h2 id="register-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">Cihaz Ekle</h2>
+                        </div>
+        
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="dev-add-name" name="nme" rel="Sensör"/>
+                                <label class="mdl-textfield__label" for="dev-add-name">Cihaz ID</label>
+                            </div>
+                            <label class="text-error"></label>
+                        </div>
+        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button id="dev-add-save-btn" type="button" onclick="dev.addSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button id>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- EDIT DEVICE PAGE -->  
+            <div id="editDevice" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div id="editDevice-back-btn" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="ft-register-box">
+                    <form id="device-edit-form" method="post">
+                        <input id="cmd" name="cmd" value="dev-edit" hidden/>
+                        <input id="dev-id" name="dev-id" value="" hidden/>
+                        <input id="edit-dev-usid" name="usid" value="" hidden/>
+                        <input id="edit-dev-code" name="code" value="" hidden/>
+                        <div class="mdl-card__title mdl-color-text--white relative">
+                            <h2 id="register-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">Düzenle</h2>
+                        </div>
+        
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="dev-name" name="dev-name" rel="Cihaz Adı"/>
+                                <label class="mdl-textfield__label" for="dev-name">Cihaz Adı</label>
+                            </div>
+                            <label class="text-error"></label>
+                        </div>
+        
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button id="dev-edit-save-btn" type="button" onclick="dev.editSave()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- SET HOME OUT DELAY PAGE -->  
+            <div id="setHomeOutDelay" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                                <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="page-content">
+                                <div class="time-list-box">
+                                        <input id="time-set-dev-id" name="time-set-dev-id" value="" hidden/>
+                                        <ul class="demo-list-control mdl-list">
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    15 Saniye
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-time-15">
+                                                    <input type="radio" id="set-time-15" class="mdl-radio__button" name="set-time" value="15"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    30 Saniye
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-time-30">
+                                                    <input type="radio" id="set-time-30" class="mdl-radio__button" name="set-time" value="30"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    60 Saniye
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-time-60">
+                                                    <input type="radio" id="set-time-60" class="mdl-radio__button" name="set-time" value="60" />
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    90 Saniye
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-time-90">
+                                                    <input type="radio" id="set-time-90" class="mdl-radio__button" name="set-time" value="90"/>
+                                                    </label>
+                                                </span>
+                                            </li>
+                                            <li class="mdl-list__item">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <i class="material-icons  mdl-list__item-avatar">timelapse</i>
+                                                    120 Saniye
+                                                </span>
+                                                <span class="mdl-list__item-secondary-action">
+                                                    <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="set-time-120">
+                                                    <input type="radio" id="set-time-120" class="mdl-radio__button" name="set-time" value="120" />
+                                                    </label>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="mdl-card__actions mdl-card--border">
+                                        <div class="mdl-grid">
+                                            <button type="button" onclick="dev.setHomeOutDelay()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                                Kaydet
+                                            </button>
+                                        </div>
+                                    </div>
+                        </div>
+                    </main>
+                </div>
+
+            </div>
+
+            <!-- EDIT DEVICE NOTIFY PAGE -->  
+            <div id="editDeviceNotify" class="ft-page bg-white">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div id="editDeviceNotify-back-btn" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                                <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="page-content">
+                                <div class="edit-notify-box">
+                                    <form id="edit-notify-form">
+                                    <input id="edit-notify-did" name="did" value="" hidden/>
+                                    <input id="edit-notify-usid" name="usid" value="" hidden/>
+                                    <input id="edit-notify-code" name="code" value="" hidden/>
+
+                                    <ul class="demo-list-three mdl-list">
+                                        <li class="mdl-list__item mdl-list__item--three-line">
+                                          <span class="mdl-list__item-primary-content">
+                                            <i class="mdl-list__item-avatar sm-notify-icon"><img src="img/m1.png"></i>
+                                            <span>Buzzer Aktif / Led Aktif</span>
+                                            <span class="mdl-list__item-text-body">
+                                              Cihaz uyarı durumunda, uyarı sesleri ve uyarı ışığı aktif olur
+                                            </span>
+                                          </span>
+                                          <span class="mdl-list__item-secondary-content">
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                                                <input type="radio" id="option-1" class="mdl-radio__button edit-notify-radio" name="options" value="1">
+                                              </label>
+                                          </span>
+                                        </li>
+                                        <li class="mdl-list__item mdl-list__item--three-line">
+                                          <span class="mdl-list__item-primary-content">
+                                            <i class="mdl-list__item-avatar sm-notify-icon"><img src="img/m2.png"></i>
+                                            <span>Buzzer Aktif / Led Pasif</span>
+                                            <span class="mdl-list__item-text-body">
+                                              Cihaz uyarı durumunda, uyarı sesleri aktif olur. Fakat uyarı ışığı aktif olmaz.
+                                            </span>
+                                          </span>
+                                          <span class="mdl-list__item-secondary-content">
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                                                <input type="radio" id="option-2" class="mdl-radio__button edit-notify-radio" name="options" value="2">
+                                              </label>
+                                          </span>
+                                        </li>
+                                        <li class="mdl-list__item mdl-list__item--three-line">
+                                          <span class="mdl-list__item-primary-content">
+                                            <i class="mdl-list__item-avatar sm-notify-icon"><img src="img/m3.png"></i>
+                                            <span>Buzzer Pasif / Led Aktif</span>
+                                            <span class="mdl-list__item-text-body">
+                                                Cihaz uyarı durumunda, uyarı ışığı aktif olur. Fakat uyarı sesleri aktif olmaz.
+                                            </span>
+                                          </span>
+                                          <span class="mdl-list__item-secondary-content">
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                                                <input type="radio" id="option-3" class="mdl-radio__button edit-notify-radio" name="options" value="3">
+                                              </label>
+                                          </span>
+                                        </li>
+                                        <li class="mdl-list__item mdl-list__item--three-line">
+                                          <span class="mdl-list__item-primary-content">
+                                            <i class="mdl-list__item-avatar sm-notify-icon"><img src="img/m4.png"></i>
+                                            <span>Buzzer Pasif / Led Pasif</span>
+                                            <span class="mdl-list__item-text-body">
+                                              Cihaz uyarı durumunda, uyarı sesleri aktif olur. Fakat uyarı ışığı aktif olmaz.
+                                            </span>
+                                          </span>
+                                          <span class="mdl-list__item-secondary-content">
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
+                                                <input type="radio" id="option-4" class="mdl-radio__button edit-notify-radio" name="options" value="4">
+                                              </label>
+                                          </span>
+                                        </li>
+                                        
+                                      </ul>
+
+                                    </form>
+
+
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-grid">
+                                        <button id="editDeviceNotify-save-btn" type="button" onclick="dev.saveDeviceNotify()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                            Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                    </main>
+                </div>
+
+            </div>
+
+            <!-- MASTER USER REGISTER PAGE -->  
+            <div id="masterUserRegister" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('login')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                            
+                        <div class="mdl-layout__header-row">
+                            <!-- Title -->
+                            <span class="mdl-layout-title"></span>
+                            <!-- Add spacer, to align navigation to the right -->
+                            <img class="top-logo" src="img/logo.png">
+                            <div class="mdl-layout-spacer"></div>
+                        </div>
+                    </header>
+                </div>
+    
+                <div class="ft-register-box">
+                    <form id="master-user-register-form" method="post">
+                        <input id="user-sub" name="user-sub" value="0" hidden/>
+                        <input id="mreg-firm-key" name="firm-key" value="" hidden/>
+                        <input id="mreg-token" name="token" value="" hidden/>
+                        <input id="mreg-code" name="code" value="" hidden/>
+
+
+                        <div class="mdl-card__title mdl-color-text--white relative">
+                            <h2 id="register-title" class="mdl-card__title-text" style="color:rgb(63, 81, 181)">
+                                Kayıt Olun
+                            </h2>
+                        </div>
+
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-name" name="reg-name" rel="Ad"/>
+                                <label class="mdl-textfield__label" for="name">Ad</label>
+                            </div>
+                            <label class="text-error" id="reg-name-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-lastname" name="reg-lastname" rel="Soyad"/>
+                                <label class="mdl-textfield__label" for="lastname">Soyad</label>
+                            </div>
+                            <label class="text-error" id="reg-lastname-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-email" name="reg-email" rel="E-posta"/>
+                                <label class="mdl-textfield__label" for="email">E-Posta</label>
+                            </div>
+                            <label class="text-error" id="reg-email-err"></label>
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-cellp" name="reg-cellp" rel="Cep Telefon" placeholder="544#######"/>
+                                <label class="mdl-textfield__label" for="cellp">Cep Telefonu</label>
+                            </div>
+                            <label class="text-error" id="reg-cellp-err"></label>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" id="reg-username" name="reg-username" rel="Kullanıcı adı"/>
+                                <label class="mdl-textfield__label" for="username">Kullanıcı Adı</label>
+                            </div>
+                            <label class="text-error" id="reg-username-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input require" type="password" id="reg-password" name="reg-password" rel="Şifre"/>
+                                <label class="mdl-textfield__label" for="password">Şifre</label>
+                            </div>
+                            <label class="text-error" id="reg-password-err"></label>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input require" type="password" id="reg-repassword" name="reg-repassword" rel="Şifre (Tekrar)"/>
+                                    <label class="mdl-textfield__label" for="repassword">Şifre (Tekrar)</label>
+                            </div>
+                            <label class="text-error" id="reg-repassword-err"></label>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <div class="mdl-grid">
+                                <button type="button" onclick="user.masterUserRegister()" class="mdl-cell mdl-cell--12-col mdl-button mdl-button--raised mdl-button--goldenrod mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+                
+            <!-- TIME LINE PAGE -->  
+            <div id="timeLine" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button back-btn" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+
+                      </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="time-line-card">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Alarm Geçmişi</h2>
+                                      <div class="time-line-date-row">
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input class="mdl-textfield__input" type="text" id="timeline-date-input" onchange="scrollToDate()" onclick="hideKeyboard()">
+                                            <label class="mdl-textfield__label" for="timeline-date-input"></label>
+                                          </div>
+                                     </div>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+
+                                        <div id="alarm-time-line" class="demo-list-action mdl-list">
+                                            <ul id="time-line-list" class="ft-time-line">
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li class="day-line">
+                                                    06.01.2020
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="time-line-icon">
+                                                        <img src="img/sensors/siren.png">
+                                                    </div>
+                                                    <div class="time-line-middle">
+                                                        <div class="time-line-date-time">04:20 | 07.01.2019</div>
+                                                        <div class="time-line-text">Evim \ Oturma Odası \ Kapı Sensörü</div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                
+
+            </div>
+
+            
+            <!-- HOME PAGE -->  
+            <div id="alarmPhotos" class="ft-page bg-light">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+                      </div>
+                    </header>
+                    <main class="mdl-layout__content bg-home">
+                        <div class="page-content">
+                            <div id="place-list">
+                                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                                    <div class="mdl-card__title">
+                                      <h2 class="mdl-card__title-text">Kayıtlar</h2>
+                                    </div>
+                                    <div class="mdl-card__supporting-text">
+
+                                        <div id="photo-list" class="demo-list-action mdl-list">
+  
+
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- HOME PAGE -->  
+            <div id="PhotoView" class="ft-page bg-dark">
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                    <header class="mdl-layout__header">
+                      <div class="mdl-layout__header-row">
+                        <div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button" onclick="Page.route('home')">
+                            <i class="material-icons">arrow_back_ios</i>
+                        </div>
+                        <!-- Title -->
+                        <span class="mdl-layout-title"></span>
+                        <img class="top-logo" src="img/logo.png">
+                        <!-- Add spacer, to align navigation to the right -->
+                        <div class="mdl-layout-spacer"></div>
+                      </div>
+                    </header>
+                    <main class="mdl-layout__content">
+                        <div class="page-content">
+                            <div id="imageBox">
+                                <canvas id="mainCanvas" width="100%" height="100%">    
+                                    Your browser does not support the HTML5 canvas tag.
+                                </canvas>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+
+            <div class="ft-bottom-alert-wrap">
+
+            </div>
+
+            <div id="ft-snack-message" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action" type="button"></button>
+              </div>
+
+            <div id="preLoader" class="previewloader">
+                <div class="previewloaderInner">
+                    <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                </div>
+            </div>
+            
+            <dialog id="takePhotoDialog" class="mdl-dialog">
+                <h4 class="mdl-dialog__title">Allow data collection?</h4>
+                <div class="mdl-dialog__content">
+                  <img src="" class="take-photo-img">
+                </div>
+                <div class="mdl-dialog__actions">
+                    <button type="button" class="mdl-button close"><span class="material-icons">close</span></button>
+                    <button type="button" id="zoom-img" class="mdl-button"><span class="material-icons">zoom_in</span></button>
+                    <button type="button" id="download_img" class="mdl-button"><span class="material-icons">get_app</span></button>
+                </div>
+              
+            </dialog>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery-3.4.1.min.js"></script>
+        <script>
+            var wp=screen.width*.01;
+            var hp=screen.height*.01;
+            function wRes(wd, plus=0){ return ((wd*wp) + plus) + "px"; }
+            function hRes(hg, plus=0){ return ((hg*hp) + plus) + "px";  }
+
+
+            $(".ft-intro-logo").css("margin-top", hRes(50, -25));
+
+            function resizeForOldAndroid(){
+                $("body, .ft-main, .ft-page, .ft-input-icon img, .previewloader").css({"height":hRes(100, 0), "width":wRes(100, 0)});
+                $(".ft-nav-bar, .ft-form-row, .ft-input-group, .ft-login-btn").css("width", wRes(100, 0));
+                $(".ft-navbar-title").css("width", wRes(100, -120));
+                $(".ft-page-content").css({"height":hRes(100, -60), "width":wRes(100, 0)});
+                $(".ft-register-box").css({"height":hRes(100, -80), "margin":"70px " + wRes(50, -165)});
+                $(".ft-login-box").css({"margin":"10px " + wRes(50, -165)});
+                $(".ft-title").css({"left":wRes(10, 0), "right":wRes(10, 0), "width": wRes(80, 0)});
+                $(".ft-form-group").css({"height":hRes(100, -110), "width": wRes(80, -20)});
+                $(".ft-input-row").css("width", wRes(100, -55));
+                $(".ft-input-row input").css({"height":hRes(100, -10), "width":wRes(100, -20)});
+                $(".ft-input-row input").css({"margin-right":wRes(10, 0),"margin-left":wRes(10, 0), "width":wRes(80, 0)});
+                $(".top-logo, .intro-logo").css({"margin-right":wRes(50, -95),"margin-left":wRes(50, -95)});
+                $(".mdl-layout__content").css({"width": wRes(100, -20), "height": hRes(100, -80)});
+                $(".previewLoaderInner").css("margin-top", hRes(50, -25));
+                $(".command-panel").css({"width": wRes(75, 0),"height": wRes(80, 0)});
+                $(".command-panel button").css({"width": wRes(30, 0),"height": wRes(7.5, 0)});
+
+                $(".command-panel .first-btn").css({"border-top-left-radius": wRes(7.5, 0)});
+                $(".command-panel .second-btn").css({"border-top-right-radius": wRes(7.5, 0)});
+                $(".command-panel .third-btn").css({"border-bottom-left-radius": wRes(7.5, 0)});
+                $(".command-panel .fourth-btn").css({"border-bottom-right-radius": wRes(7.5, 0)});
+                $(".command-panel .fifth-btn").css({"border-radius": wRes(50, 0), "width": wRes(33.75, 40), "margin":wRes(22.5, -20) + " " + wRes(20.625, -20)});
+                //$(".sensor-list").css({"width": wRes(80, 0), "margin":"10px " + wRes(10 ,0), "height":hRes(100, -wRes(73, 0))});
+                $(".alarm-status-bar").css({"width": wRes(75, 0), "margin":"10px " + wRes(10, 0)});
+                $(".demo-card-wide").css({"width": wRes(100, 0)});
+                $(".demo-list-two").css("width", wRes(100, -16));
+                $(".status-title").css("width", wRes(75, -16));
+                $(".sensors-btn").css({"width": wRes(75, 0), "margin":"10px " + wRes(10, 0)});
+                $(".ft-bottom-page").css({"width": wRes(100, 0),"height": hRes(100, -200), "bottom": "-" + hRes(100, 0)});
+                $(".ft-bottom-page-content").css({"width": wRes(100, 0),"height": hRes(100, -265)});
+                $(".ft-bottom-page-header").css({"width": wRes(100, 0)});
+                $(".time-list-box").css({"width": wRes(80, 0), "margin-left":wRes(10,0), "margin-right":wRes(10,0)});
+                //$(".title-on-line").css({"margin-left":wRes(38,-30), "margin-right":wRes(38,-30)});
+                $("#stop-alarm-btn-box").css({"width": wRes(100, 0)});
+                $(".mode-btn-icon-lt, .mode-btn-icon-rt, .mode-btn-icon-rb, .mode-btn-icon-lb, .mode-btn-icon-center").css({"width": wRes(12.8, 0)});
+            }
+
+        </script>
+        <script type="text/javascript" src="js/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="jquery-ui/datepicker-tr.js"></script>
+
+        <script type="text/javascript" src="js/basics.js"></script>
+        <script type="text/javascript" src="js/crypFT.js"></script>
+        <script type="text/javascript" src="js/alertFT.js"></script>
+        <script type="text/javascript" src="js/globals.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/place.js"></script>
+        <script type="text/javascript" src="js/listener.js"></script>
+        <script type="text/javascript" src="js/page.js"></script>
+        <script type="text/javascript" src="js/user.js"></script>
+        <script type="text/javascript" src="js/onInits.js"></script>
+        <script type="text/javascript" src="js/onClose.js"></script>
+        <script type="text/javascript" src="js/device.js"></script>
+        <script type="text/javascript" src="js/smart.js"></script>
+               
+
+
+    </body>
+</html>
